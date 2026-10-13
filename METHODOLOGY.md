@@ -46,17 +46,17 @@ Closing market cap on day -1, the last close before the announcement. Using a la
 Exclusions follow these written rules only, never expectations about how a stock will react.
 
 ## Automation
-After an initial set of events was researched by hand, the same rules were applied to the remaining candidates in `notebooks/02_automate_research.ipynb`. Hand-researched values always take priority. The automated screen is validated against the hand-researched sample before use (see Step 7 of the notebook)
+After an initial set of events was researched by hand, the same rules were applied to the remaining candidates in `notebooks/02_automate_research.ipynb`. Hand-researched values always take priority. The automated screen is validated against the hand-researched sample before use (see Step 7 of the notebook).
 - **Day 0** for automated rows is the first trading day on or after the FDA approval date. This can be one day early for after-close announcements; the main [-1, +1] window captures the reaction either way.
 - **Confounding events** for automated rows are identified from SEC filings within ±5 trading days: 8-K Items 1.01, 2.01, 2.02, 3.02, and 5.02, plus 424B prospectus filings. Flagged events are reviewed by hand.
 
 ## Known limitations
-- **Survivorship bias:** companies acquired or delisted since approval often lack price data and drop out, so the sample over-represents companies that survived.
+- **Survivorship bias:** Yahoo Finance drops the full price history of delisted stocks. Several candidates are no longer listed (e.g., Crinetics, Apellis, Esperion), including approvals from 2025, so Yahoo-only data would exclude them. CRSP access (via WRDS) has been requested to avoid this; until then, analysis is prototyped on companies that still trade.
 - **Press-release-only news:** confounding news released without an SEC filing may be missed in automated rows.
 - **Multi-product companies:** for companies with several marketed products (e.g., Ionis, Innoviva, Jazz), one approval is a smaller share of total value, which may weaken the measured reaction.
 
 ## Event study design (planned)
-- **Model:** market model, estimating each stock's alpha and beta by regression on the S&P 500, with XBI (biotech ETF) as a robustness check.
+- **Model:** market model, estimating each stock's alpha and beta by regression on the S&P 500 (SPY ETF, total return including dividends), with XBI (biotech ETF) as a robustness check.
 - **Estimation window:** trading days -250 to -31 before day 0.
 - **Event windows:** [-1, +1] (main) and [0, +5].
 - **Testing:** cumulative abnormal returns (CARs) averaged across events, with a t-test of whether the mean differs from zero.
